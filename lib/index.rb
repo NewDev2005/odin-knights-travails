@@ -89,12 +89,13 @@ def knight_moves(start_point, end_point)
     current_node = queue.shift
     vertices = get_possible_moves(current_node[:vertex])
     break unless vertices.each do |vertex|
+      current_node[:path].each do |sub_arr|
+        vertex[:path].push(sub_arr)
+      end
+      vertex[:path].push(vertex[:vertex])
       if vertex[:vertex] == end_point
-        vertex[:path] = current_node[:path].push(vertex[:vertex])
         p vertex[:path]
         break
-      else
-        vertex[:path] = current_node[:path].push(vertex[:vertex])
       end
     end
 
@@ -109,4 +110,4 @@ def knight_moves(start_point, end_point)
   end
 end
 
- knight_moves([0, 0], [7, 7])
+knight_moves([0, 0], [3, 3])
