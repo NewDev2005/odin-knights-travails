@@ -75,55 +75,38 @@ end
 
 def assign_default_distance_and_predecessor(arr)
   arr.each_with_index do |sub_arr, index|
-    arr[index] = { vertex: sub_arr, distance: nil, predecessor: nil }
+    arr[index] = { vertex: sub_arr, distance: nil, path: [] }
   end
   arr
 end
 
 def knight_moves(start_point, end_point)
   queue = []
-  visited_nodes = []
-  path = []
-  start_point = { vertex: start_point, distance: 0 }
+  start_point = { vertex: start_point, distance: 0, path: [start_point] }
   queue.push(start_point)
 
-  push_vertices_into_queue = lambda do |vertices, source|
-    vertices.each_with_index do |node, index|
-      if vertices[index][:distance].nil?
-        node[:distance] = source[:distance] + 1
-        node[:predecessor] = source[:vertex]
+  until queue.empty?
+    current_node = queue.shift
+    vertices = get_possible_moves(current_node[:vertex])
+    break unless vertices.each do |vertex|
+      if vertex[:vertex] == end_point
+        vertex[:path] = current_node[:path].push(vertex[:vertex])
+        p vertex[:path]
+        break
+      else
+        vertex[:path] = current_node[:path].push(vertex[:vertex])
+      end
+    end
+
+    vertices.each do |node|
+      if node[:distance].nil?
+        node[:distance] = current_node[:distance] + 1
         queue.push(node)
-        # p vertices[index][:vertex]
-      elsif !vertices[index][:distance].nil?
+      elsif !node[:distance].nil?
         next
       end
     end
   end
-
-  until queue.empty?
-    node = queue.shift
-    visited_nodes.push(node)
-    vertices = get_possible_moves(node[:vertex])
-    break unless vertices.each do |vertex|
-      if vertex[:vertex] == end_point
-        path.push(node)
-        break
-      end
-    end
-
-    push_vertices_into_queue.call(vertices, node)
-  end
-
-  visited_nodes.each do |node|
-    if path[0][:predecessor] == node[:vertex]
-      path.unshift(node)
-    end
-  end
-
-  path.each do |node|
-    p node[:vertex]
-  end
-  p end_point
 end
 
-knight_moves([0, 0], [7, 7])
+ knight_moves([0, 0], [7, 7])
