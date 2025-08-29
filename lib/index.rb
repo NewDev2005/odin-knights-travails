@@ -109,5 +109,3 @@ def knight_moves(start_point, end_point)
     end
   end
 end
-
-knight_moves([0, 0], [3, 3])
